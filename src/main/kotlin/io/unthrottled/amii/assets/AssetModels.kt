@@ -152,7 +152,7 @@ data class CharacterRepresentation(
       id,
       anime,
       name,
-      Gender.fromValue(gender)
+      Gender.fromValue(gender),
     )
 }
 

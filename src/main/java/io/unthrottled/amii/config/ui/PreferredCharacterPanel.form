@@ -8,15 +8,45 @@
     <properties/>
     <border type="none"/>
     <children>
-      <xy id="c0963" binding="myTreePanel" layout-manager="XYLayout" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <splitpane id="3571">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
-        <children/>
-      </xy>
+        <children>
+          <xy id="c0963" binding="myTreePanel" layout-manager="XYLayout" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children/>
+          </xy>
+          <scrollpane id="bdf35" binding="myScrollPane">
+            <constraints>
+              <splitpane position="right"/>
+            </constraints>
+            <properties>
+              <horizontalScrollBarPolicy value="30"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="42af4" class="javax.swing.JTextPane" binding="myPreviewTextPane">
+                <constraints/>
+                <properties>
+                  <contentType value="text/html"/>
+                  <editable value="false"/>
+                  <text value="&lt;html&gt;&#10;  &lt;head&gt;&#10;    &#10;  &lt;/head&gt;&#10;  &lt;body&gt;&#10;  &lt;/body&gt;&#10;&lt;/html&gt;&#10;"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </splitpane>
     </children>
   </grid>
 </form>

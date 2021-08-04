@@ -9,12 +9,8 @@ import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.packageDependencies.ui.TreeExpansionMonitor
-import com.intellij.ui.CheckboxTree
+import com.intellij.ui.*
 import com.intellij.ui.CheckboxTree.CheckboxTreeCellRenderer
-import com.intellij.ui.CheckedTreeNode
-import com.intellij.ui.FilterComponent
-import com.intellij.ui.ScrollPaneFactory
-import com.intellij.ui.SimpleTextAttributes
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.tree.TreeUtil
@@ -24,14 +20,13 @@ import io.unthrottled.amii.assets.VisualEntityRepository
 import io.unthrottled.amii.tools.toOptional
 import java.awt.BorderLayout
 import java.awt.EventQueue
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.LinkedList
+import java.util.*
 import java.util.function.Predicate
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTree
 import javax.swing.SwingUtilities
+import javax.swing.event.TreeSelectionListener
 import javax.swing.tree.DefaultTreeModel
 import javax.swing.tree.TreeNode
 
@@ -129,6 +124,10 @@ class PreferredCharacterTree(
   fun filter(intentionsToShow: List<CharacterData>) {
     refreshCheckStatus(myTree.model.root as CheckedTreeNode)
     reset(copyAndSort(intentionsToShow))
+  }
+
+  fun addTreeSelectionListener(tsl: TreeSelectionListener) {
+    myTree.addTreeSelectionListener(tsl)
   }
 
   fun reset() {

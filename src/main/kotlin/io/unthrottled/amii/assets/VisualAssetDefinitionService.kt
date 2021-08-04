@@ -4,7 +4,7 @@ import io.unthrottled.amii.assets.VisualEntitySupplier.getLocalAssetsByCategory
 import io.unthrottled.amii.assets.VisualEntitySupplier.getRemoteAssetsByCategory
 import io.unthrottled.amii.tools.Logging
 import io.unthrottled.amii.tools.toOptional
-import java.util.Optional
+import java.util.*
 
 object VisualAssetDefinitionService : Logging {
 
@@ -45,6 +45,10 @@ fun chooseAssetAtRandom(
     .toOptional()
     .filter { it.isNotEmpty() }
     .flatMap { VisualAssetProbabilityService.instance.pickAssetFromList(it) }
+
+fun getAssetsByCharacterId(id: String): Collection<VisualAssetEntity> =
+  VisualEntityService.instance.supplyAllLocalAssetDefinitions()
+     .filter { it.characters.stream().anyMatch { c -> c.id == id } }
 
 fun Collection<VisualAssetEntity>.filterByCategory(
   category: MemeAssetCategory
