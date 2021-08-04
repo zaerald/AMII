@@ -6,6 +6,7 @@ import io.unthrottled.amii.assets.CharacterEntity;
 import io.unthrottled.amii.assets.VisualAssetEntity;
 import io.unthrottled.amii.assets.VisualContentManager;
 import io.unthrottled.amii.assets.VisualMemeContent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +22,12 @@ public final class PreferredCharacterPanel {
   private final PreferredCharacterTree myPreferredCharacterTree;
   private JPanel myPanel;
   private JPanel myTreePanel;
-  private JTextPane myPreviewTextPane;
+
+  private JPanel myContainerPanel;
+  private JPanel myEmptyPreviewPanel;
+  private JButton myShowPreviewButton;
   private JScrollPane myScrollPane;
+  private JTextPane myPreviewTextPane;
 
   public PreferredCharacterPanel(
     Predicate<CharacterEntity> selectionPredicate
@@ -32,36 +37,55 @@ public final class PreferredCharacterPanel {
     myTreePanel.add(myPreferredCharacterTree.getComponent(), BorderLayout.CENTER);
 
     myPreferredCharacterTree.addTreeSelectionListener(e -> {
-
       Object node = e.getPath().getLastPathComponent();
       if (node instanceof CheckedTreeNode) {
         Object userObject = ((CheckedTreeNode) node).getUserObject();
-        if (!(userObject instanceof CharacterEntity)) return;
+        if (userObject instanceof CharacterEntity) {
+          showPreviewPanel();
 
-        String characterId = ((CharacterEntity) userObject).getId();
-        Collection<VisualAssetEntity> assetsByCharacterId = getAssetsByCharacterId(characterId);
+          String characterId = ((CharacterEntity) userObject).getId();
+          Collection<VisualAssetEntity> assetsByCharacterId = getAssetsByCharacterId(characterId);
 
-        String memeAssets = assetsByCharacterId.stream()
-          .map(it ->
-            "<p>" + it.getPath() + "</p>" +
-              "<div style=\"text-align: center\">" +
-              "<img src=\"" +
-              VisualContentManager.INSTANCE
-                .resolveAsset(it.getRepresentation())
-                .map(VisualMemeContent::getFilePath)
-                // TODO: update, ask to request for preview first
-                .orElse(URI.create("https://waifu.assets.unthrottled.io/visuals/amused/aqua_amused.gif")) +
-              "\">" +
-              "</div>" +
-              "<br><br>"
-          ).collect(joining());
-
-        myPreviewTextPane.setText(memeAssets);
-        myPreviewTextPane.setCaretPosition(0);
+          if (assetsByCharacterId.isEmpty()) {
+            showEmptyPreviewPanel();
+          } else {
+            myPreviewTextPane.setText(generateCharacterPreview(assetsByCharacterId));
+            myPreviewTextPane.setCaretPosition(0);
+          }
+        } else {
+          showEmptyPreviewPanel();
+        }
       }
     });
 
     GuiUtils.replaceJSplitPaneWithIDEASplitter(myPanel);
+  }
+
+  @NotNull
+  private String generateCharacterPreview(Collection<VisualAssetEntity> assetsByCharacterId) {
+    return assetsByCharacterId.stream()
+      .filter(it -> !it.getRepresentation().getPath().isEmpty())
+      .map(it ->
+        "<div style=\"text-align: center\">" +
+          "<img src=\"" +
+          VisualContentManager.INSTANCE
+            .resolveAsset(it.getRepresentation())
+            .map(VisualMemeContent::getFilePath)
+            .orElse(URI.create("")) +
+          "\">" +
+          "</div>" +
+          "<br><br>"
+      ).collect(joining());
+  }
+
+  private void showEmptyPreviewPanel() {
+    myEmptyPreviewPanel.setVisible(true);
+    myScrollPane.setVisible(false);
+  }
+
+  private void showPreviewPanel() {
+    myEmptyPreviewPanel.setVisible(false);
+    myScrollPane.setVisible(true);
   }
 
   public void reset() {
