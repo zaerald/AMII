@@ -36,7 +36,9 @@ public final class PreferredCharacterPanel {
     myTreePanel.setLayout(new BorderLayout());
     myTreePanel.add(myPreferredCharacterTree.getComponent(), BorderLayout.CENTER);
 
+    showEmptyPreviewPanel();
     myPreferredCharacterTree.addTreeSelectionListener(e -> {
+      myPreviewTextPane.setText("");
       Object node = e.getPath().getLastPathComponent();
       if (node instanceof CheckedTreeNode) {
         Object userObject = ((CheckedTreeNode) node).getUserObject();
@@ -56,6 +58,10 @@ public final class PreferredCharacterPanel {
           showEmptyPreviewPanel();
         }
       }
+    });
+
+    myShowPreviewButton.addActionListener(e -> {
+      showPreviewPanel();
     });
 
     GuiUtils.replaceJSplitPaneWithIDEASplitter(myPanel);
